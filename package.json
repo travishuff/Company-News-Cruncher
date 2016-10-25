@@ -1,0 +1,26 @@
+{
+  "name": "company-news-crucher",
+  "version": "1.0.0",
+  "description": "An intelligent news analysis tool for any company's newsflow.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/travishuff/company-news-crucher.git"
+  },
+  "author": "Travis Huff",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/travishuff/company-news-crucher/issues"
+  },
+  "homepage": "https://github.com/travishuff/company-news-crucher#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "path": "^0.12.7",
+    "request": "^2.76.0",
+    "watson-developer-cloud": "^2.7.0"
+  }
+}
