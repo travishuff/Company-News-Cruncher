@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const bodyParser = require('body-parser');
+const cache = require('apicache').middleware;
 
-const watsonController = require('./watson');
+const { getData, getNews, getTicker } = require('./watson');
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -12,11 +14,16 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, '../client/' )));
 
-// app.get('/', watsonController.getData);
-// app.post('/', watsonController.getData);
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/getNews', watsonController.getNews);
-app.post('/getNews', watsonController.getNews);
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, './../client/index.html'))
+});
+
+app.post('/getNews', getNews, getData);
+// app.post('/getNews', cache('3 minutes'), watsonController.getNews);
+
+app.post('/getTicker', cache('10 minutes'), getTicker);
 
 app.listen(3000);
 

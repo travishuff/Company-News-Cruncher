@@ -5,55 +5,65 @@ var alchemy_language = watson.alchemy_language({
 });
 
 const watsonController = {
-  // getData: (req, res, next) => {
-  //   console.log('accepted request from scraper: ', res.statusCode);
 
-  //   request('https://news.ycombinator.com/', (error, response, html) => {
-  //     if (error) console.error(error);
-      
-  //     const data = JSON.stringify('U have entered');
-
-  //     res.set('Content-Type', 'application/JSON');
-  //     res.send(data);
-      
-  //     //  where do I put 'next();' command?
-  //   });
-  // }
-
-  getData: () => {
+  getData: (req, res, next) => {
+    console.log('into getData:');
     let parameters = {
       extract: 'title,doc-sentiment',
       // sentiment: 1,
-      maxRetrieve: 3,
-      url: 'http://www.fool.com/investing/2016/10/25/3-questions-for-apple-inc-ceo-tim-cook-today.aspx'
+      maxRetrieve: 1,
+      url: req.urlArr[0]  //  Set which article to analyze here.
     };
 
     alchemy_language.combined(parameters, function (err, response) {
       if (err)
-        console.log('error:', err);
+        console.error('error:', err);
       else
-        console.log(JSON.stringify(response, null, 2));
+        console.log('into alchemy request:');
+        console.log(response);  // Alchemy docs say to use 'response' here.
+
+        res.json(response);
+        // res.end();
     });
     // next();
   },
 
   getNews: (req, res, next) => {
     console.log('accepted request: ', res.statusCode);
+    let company = Object.keys(req.body)[0];  // get the company from the form input
+    console.log(`Company request: ${company}`);
 
     const APIKEY = '6e3edf7b9c31fb749ea18b50bbb0a6f28731df30';
-    let url = 'https://gateway-a.watsonplatform.net/calls/data/GetNews?apikey=6e3edf7b9c31fb749ea18b50bbb0a6f28731df30&outputMode=json&outputMode=json&start=now-7d&end=now&count=1&return=enriched,original';
-    const urlStart = 'https://gateway-a.watsonplatform.net/calls/data/GetNews';
+    let url = `https://gateway-a.watsonplatform.net/calls/data/GetNews?outputMode=json&start=now-1d&end=now&count=1&q.enriched.url.title=${company}&return=enriched.url.url,enriched.url.title&apikey=${APIKEY}`;  //  SET # OF ARTICLES HERE
+    // TREND ANALYSIS # of articles //  https://gateway-a.watsonplatform.net/calls/data/GetNews?outputMode=json&start=now-7d&end=now&timeSlice=1d&q.enriched.url.entities.entity=|text=${company},type=Company|&apikey=${APIKEY}
 
     request(url, (error, response, html) => {
       if (error) console.error(error);
-
-      // console.log(response.body);
-      // res.set('Content-Type', 'application/JSON');
-      res.send(JSON.stringify(response.body));
-      
-      //  where do I put 'next();' command?
+      console.log(response.body);
+      let parsed = JSON.parse(response.body);
+      let urlArr = [];
+      for (let i = 0; i < 1; i++) {  //  SET # OF ARTICLES HERE
+        urlArr.push(parsed.result.docs[i].source.enriched.url.url);
+      }
+      console.log(urlArr);
+      req.urlArr = urlArr;
+      next();
     });
-    // next();
+  },
+
+  getTicker: (req, res, next) => {
+    console.log('ticker request: ', res.statusCode);
+    let ticker = Object.keys(req.body)[0];  // get the company from the form input
+    console.log(`ticker request: ${ticker}`);
+
+    let url = `http://finance.google.com/finance/info?client=ig&q=NASDAQ%3A${ticker}`;
+
+    request(url, (error, response, html) => {
+      if (error) console.error(error);
+      console.log(response.body);
+      res.json(response.body);
+    });
+
   }
 
 };
