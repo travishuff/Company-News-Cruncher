@@ -1,5 +1,5 @@
 {
-  "name": "company-news-crucher",
+  "name": "company-news-cruncher",
   "version": "1.0.0",
   "description": "An intelligent news analysis tool for any company's newsflow.",
   "main": "index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/travishuff/company-news-crucher.git"
+    "url": "git+https://github.com/travishuff/company-news-cruncher.git"
   },
   "author": "Travis Huff",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/travishuff/company-news-crucher/issues"
+    "url": "https://github.com/travishuff/company-news-cruncher/issues"
   },
-  "homepage": "https://github.com/travishuff/company-news-crucher#readme",
+  "homepage": "https://github.com/travishuff/company-news-cruncher#readme",
   "dependencies": {
     "apicache": "^0.3.4",
     "body-parser": "^1.15.2",
