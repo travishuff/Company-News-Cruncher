@@ -9,7 +9,7 @@ const watsonController = {
   getData: (req, res, next) => {
     console.log('into getData:');
     let parameters = {
-      extract: 'title,doc-sentiment',
+      extract: 'title,concepts,doc-sentiment',  //  entities,taxonomy,
       // sentiment: 1,
       maxRetrieve: 1,
       url: req.urlArr[0]  //  Set which article to analyze here.

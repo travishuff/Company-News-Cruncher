@@ -20,8 +20,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, './../client/index.html'))
 });
 
-app.post('/getNews', getNews, getData);
-// app.post('/getNews', cache('3 minutes'), watsonController.getNews);
+app.post('/getNews', cache('2 minutes'), getNews, getData);
 
 app.post('/getTicker', cache('1 minutes'), getTicker);
 
