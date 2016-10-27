@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 app.post('/getNews', getNews, getData);
 // app.post('/getNews', cache('3 minutes'), watsonController.getNews);
 
-app.post('/getTicker', cache('10 minutes'), getTicker);
+app.post('/getTicker', cache('1 minutes'), getTicker);
 
 app.listen(3000);
 
