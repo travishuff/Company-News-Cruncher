@@ -20,7 +20,7 @@ $(document).ready((e) => {
       });
     });
 
-    $( '#ticker-button' ).on('click', () => {
+  $( '#ticker-button' ).on('click', () => {
     let ticker = $( '#ticker' ).val();
 
     $.ajax({
@@ -34,7 +34,7 @@ $(document).ready((e) => {
         parsed = JSON.parse(parsed);
         console.log(parsed);
         $( ".root2" ).append( `<p>${parsed[0].t} ${parsed[0].l}</p>
-                                <p class="ticker-time">${parsed[0].lt}</p>` );
+                               <p class="ticker-time">${parsed[0].lt}</p>` );
       });
-    });
+  });
 });
