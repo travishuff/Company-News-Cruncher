@@ -1,26 +1,44 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Company News Cruncher</title>
+  <link rel="stylesheet" type="text/css" href="bulma.css">
+  <link rel="stylesheet" type="text/css" href="statuspage.css">
+  <script type="text/javascript" src="./jquery-3.1.1.js"></script>
+  <script type="text/javascript" src="index.js"></script>
 </head>
-<link rel="stylesheet" href="style.css" />
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
-<script type="text/javascript" src="index.js"></script>
 <body>
-
-  <h1>Company News Cruncher</h1>
-
-    <input type="text" id="company" placeholder="Company Ticker" autofocus></input>
-    <button type="submit" id="message-button">Submit</button>
-
-    <div class="root"></div>
-
-  <h1>Company Ticker</h1>
-
-    <input type="text" id="ticker" placeholder="Company Ticker" autofocus></input>
-    <button type="submit" id="ticker-button">Submit</button>
-
-    <div class="root2"></div>
-
+  <div class="container">
+    <div>
+      <h1>Company News Cruncher</h1>
+    </div>
+    <div class="section">
+      <div class="status-header">
+        <div class="indicator"></div>
+        <div class="title">AI-powered News Cruncher</div>
+        <div class="subtitle">
+          <input type="text" class="input" id="company" placeholder="Company Ticker" autofocus></input>
+          <button type="submit" class="button" id="message-button">Submit</button>
+          <div class="root"></div>
+        </div>
+      </div>
+      <div class="status-header">
+        <div class="indicator"></div>
+        <div class="title">Ticker</div>
+        <div class="subtitle">
+          <input type="text" class="input" id="ticker" placeholder="Company Ticker" autofocus></input>
+          <button type="submit" class="button" id="ticker-button">Submit</button>
+          <div class="root2"></div>
+        </div>
+      </div>
+      <div class="status-uptime">
+        <div class="title">Date</div>
+        <div class="uptime" id="date"></div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

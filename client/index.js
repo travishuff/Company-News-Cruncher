@@ -1,5 +1,7 @@
 $(document).ready((e) => {
+  let today = Date();
 
+  $('#date').append(today);
   $('#message-button').on('click', getAI);
   $('#company').on('keypress', (e) => {
     if (e.keyCode === 13) getAI();
@@ -49,5 +51,13 @@ $(document).ready((e) => {
                               <p class="ticker-time">${parsed[0].lt}</p>`);
     });
   }
+
+  // function getDate() {
+  //   let month = getMonth();
+  //   let date = getDate();
+  //   let year = getFullYear();
+  //   let value = `${month} ${date}, ${year}`;
+  //   return value;
+  // }
 
 });
