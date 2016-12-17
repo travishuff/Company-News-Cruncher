@@ -1,2 +1,4 @@
+.gitignore
 node_modules
 .DS_Store
+client/index_old.html

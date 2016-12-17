@@ -5,20 +5,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Company News Cruncher</title>
-  <link rel="stylesheet" type="text/css" href="bulma.css">
-  <link rel="stylesheet" type="text/css" href="statuspage.css">
-  <script type="text/javascript" src="./jquery-3.1.1.js"></script>
-  <script type="text/javascript" src="index.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/bulma.css">
+  <link rel="stylesheet" type="text/css" href="css/statuspage.css">
+  <script type="text/javascript" src="js/jquery-3.1.1.js"></script>
+  <script type="text/javascript" src="js/index.js"></script>
 </head>
 <body>
   <div class="container">
     <div>
-      <h1>Company News Cruncher</h1>
+      <h1 class="title">Company News Cruncher</h1>
     </div>
     <div class="section">
       <div class="status-header">
         <div class="indicator"></div>
-        <div class="title">AI-powered News Cruncher</div>
+        <div class="title">AI-powered News Analysis</div>
         <div class="subtitle">
           <input type="text" class="input" id="company" placeholder="Company Ticker" autofocus></input>
           <button type="submit" class="button" id="message-button">Submit</button>
@@ -37,6 +37,8 @@
       <div class="status-uptime">
         <div class="title">Date</div>
         <div class="uptime" id="date"></div>
+        <div class="label uptime">powered by IBM Bluemix Cognitive Solutions<br>
+      software design and engineering by Travis Huff</div>
       </div>
     </div>
   </div>
