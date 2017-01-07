@@ -14,7 +14,7 @@ Automatically crunch the news on any company and return sentiment analysis on ma
 
 ##Support  
 Tested in Chrome 55 & Node 6/7.  
-GitHub Issues: <https://github.com/team-emt/razorframe/issues>
+GitHub Issues: <https://github.com/travishuff/Company-News-Cruncher/issues>
 
 ##Contributions
 ❤️ Contributions welcome!  
