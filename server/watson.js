@@ -9,7 +9,7 @@ const watsonController = {
   getData: (req, res, next) => {
     console.log('into getData:');
     let parameters = {
-      extract: 'title,concepts,doc-sentiment',  //  entities,taxonomy,
+      extract: 'title,concepts,doc-sentiment',  //  can also add: entities,taxonomy,
       // sentiment: 1,
       maxRetrieve: 1,
       url: req.urlArr[0]  //  Set which article to analyze here.
@@ -19,11 +19,9 @@ const watsonController = {
       if (err)
         console.error('error:', err);
       else
-        console.log('into alchemy request:');
-        console.log(response);  // Alchemy docs say to use 'response' here.
+        console.log('into alchemy request:', response);
 
         res.json(response);
-        // res.end();
     });
     // next();
   },
@@ -42,7 +40,9 @@ const watsonController = {
       console.log(response.body);
       let parsed = JSON.parse(response.body);
       let urlArr = [];
-      for (let i = 0; i < 1; i++) {  //  SET # OF ARTICLES HERE
+
+      //  SET # OF ARTICLES HERE
+      for (let i = 0; i < 1; i++) {
         urlArr.push(parsed.result.docs[i].source.enriched.url.url);
       }
       console.log(urlArr);
@@ -52,8 +52,8 @@ const watsonController = {
   },
 
   getTicker: (req, res, next) => {
-    console.log('ticker request: ', res.statusCode);
-    let ticker = Object.keys(req.body)[0];  // get the company from the form input
+    console.log('response status:', res.statusCode);
+    let ticker = Object.keys(req.body)[0];
     console.log(`ticker request: ${ticker}`);
 
     let url = `http://finance.google.com/finance/info?client=ig&q=NASDAQ%3A${ticker}`;
