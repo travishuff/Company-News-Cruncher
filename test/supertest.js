@@ -1,7 +1,5 @@
 const expect = require('chai').expect;
 const request = require('supertest');
-// const path = require('path');
-// const fs = require('fs');
 const app = require('../server/server');
 const PORT = process.env.PORT || 3000;
 const HOST = `http://localhost:${PORT}`;
