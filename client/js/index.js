@@ -19,7 +19,7 @@ $(document).ready((e) => {
     .done(msg => {
       $('.root').empty();
       console.log(msg);
-      // write if staments to check for existence of concepts
+      // write if statements to check for existence of concepts
       $(".root").append(`<p>Title: ${msg.title}</p>
                             <p>Sentiment: ${msg.docSentiment.type}</p>
                             <p>score: ${msg.docSentiment.score}</p>
