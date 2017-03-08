@@ -1,7 +1,11 @@
 # Company News Cruncher
 Automatically crunch the news on any company and return sentiment analysis on major ideas, people and places.  
 
+*Attn:* Bluemix Alchemy_language API is being replaced by [Natural Language Understanding (NLU)](https://www.ibm.com/blogs/bluemix/2017/02/hello-nlu/) March 2017, with EOL March 2018.
+
+
 ![Company News Cruncher Screenshot](client/img/CNC-screen.png)
+
 
 ##Dependencies
 [Express](https://github.com/expressjs/express)  
