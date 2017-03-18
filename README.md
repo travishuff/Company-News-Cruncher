@@ -7,21 +7,21 @@ Automatically crunch the news on any company and return sentiment analysis on ma
 ![Company News Cruncher Screenshot](client/img/CNC-screen.png)
 
 
-##Dependencies
+## Dependencies
 [Express](https://github.com/expressjs/express)  
 [body-parser](https://github.com/expressjs/body-parser)  
 [apicache](https://github.com/kwhitley/apicache)  
 [jQuery](http://jquery.com)  
 
-##Author  
+## Author  
 [Travis Huff](huff.travis@gmail.com)  
 
-##Support  
+## Support  
 Tested in Chrome 55 & Node 6/7.  
 GitHub Issues: <https://github.com/travishuff/Company-News-Cruncher/issues>
 
-##Contributions
+## Contributions
 ❤️ Contributions welcome!  
 
-##License  
+## License  
 [MIT](https://github.com/travishuff/razorframe/blob/master/LICENSE)
