@@ -1,210 +1,141 @@
-/*! minireset.css v0.0.2 | MIT License | github.com/jgthms/minireset.css */
-html,
-body,
-p,
-ol,
-ul,
-li,
-dl,
-dt,
-dd,
-blockquote,
-figure,
-fieldset,
-legend,
-textarea,
-pre,
-iframe,
-hr,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
-  padding: 0;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-size: 100%;
-  font-weight: normal;
-}
-
-ul {
-  list-style: none;
-}
-
-button,
-input,
-select,
-textarea {
-  margin: 0;
-}
-
-html {
-  box-sizing: border-box;
+:root {
+  color: #2f3437;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.45;
 }
 
 * {
-  box-sizing: inherit;
-}
-
-*:before, *:after {
-  box-sizing: inherit;
-}
-
-img,
-embed,
-object,
-audio,
-video {
-  height: auto;
-  max-width: 100%;
-}
-
-html {
-  background-color: whitesmoke;
-  font-size: 1em;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  min-width: 300px;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  text-rendering: optimizeLegibility;
-}
-
-article,
-aside,
-figure,
-footer,
-header,
-hgroup,
-section {
-  display: block;
-}
-
-body,
-button,
-input,
-select,
-textarea {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  box-sizing: border-box;
 }
 
 body {
-  color: #4a4a4a;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.428571428571429;
+  min-width: 300px;
+  min-height: 100vh;
+  margin: 0;
+  background: #d3d3d3;
 }
 
 a {
-  color: #00d1b2;
-  cursor: pointer;
+  color: #087f6f;
   text-decoration: none;
-  -webkit-transition: none 86ms ease-out;
-  transition: none 86ms ease-out;
 }
 
 a:hover {
-  color: #363636;
+  color: #1f2933;
 }
 
-hr {
-  background-color: #dbdbdb;
-  border: none;
-  display: block;
-  height: 1px;
-  margin: 20px 0;
+p {
+  margin: 8px 0 0;
 }
 
-img {
-  max-width: 100%;
+button,
+input {
+  margin: 0;
+  font: inherit;
 }
 
-input[type="checkbox"],
-input[type="radio"] {
-  vertical-align: baseline;
-}
-
-small {
-  font-size: 11px;
-}
-
-span {
-  font-style: inherit;
-  font-weight: inherit;
-}
-
-strong {
-  color: #363636;
-  font-weight: 700;
-}
-/* ----------------------------- */
-
-body {
-  background-color: lightgrey;
-  min-height: 100vh;
+button {
+  cursor: pointer;
 }
 
 h1 {
-  font-size: 2em;
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 400;
 }
 
 .body-container {
-  padding:50px;
   max-width: 968px;
-
+  padding: 50px;
 }
 
 .section {
-  margin-top:40px;
-  border: 2px solid black;
+  margin-top: 40px;
+  border: 2px solid #000;
   border-radius: 5px;
-  background-color: whitesmoke;
+  background: #f5f5f5;
 }
 
 .status-header {
-  padding: 40px 40px 80px 40px;
+  padding: 40px 40px 80px;
 }
+
 .status-header .indicator {
   display: inline-block;
   width: 15px;
   height: 15px;
-  border-radius: 100%;
   margin-right: 20px;
+  border-radius: 50%;
   background: #17d766;
   opacity: 0.8;
-  filter:alpha(opacity=80);
 }
+
 .status-header .title {
   display: inline-block;
 }
+
 .status-header .subtitle {
   display: block;
   margin-left: 35px;
 }
 
-.status-uptime {
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  padding: 5px;
-  margin: 5px;
+.input {
+  min-width: 220px;
+  margin-top: 12px;
+  padding: 6px 8px;
 }
+
+.button {
+  margin-left: 6px;
+  padding: 6px 10px;
+}
+
+.root,
+.root2 {
+  margin-top: 12px;
+}
+
+.status-uptime {
+  margin: 5px;
+  padding: 5px;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
 .status-uptime .title {
   display: inline-block;
+  color: #777;
   font-size: 14px;
-  color: #bbb;
 }
+
 .status-uptime .uptime {
   display: inline-block;
   margin-left: 60px;
+  color: #777;
   font-size: 14px;
-  color: #bbb;
+}
+
+@media (max-width: 640px) {
+  .body-container {
+    padding: 24px;
+  }
+
+  .status-header {
+    padding: 28px 24px 56px;
+  }
+
+  .status-header .subtitle {
+    margin-left: 0;
+  }
+
+  .input,
+  .button {
+    width: 100%;
+    margin: 10px 0 0;
+  }
+
+  .status-uptime .uptime {
+    display: block;
+    margin: 4px 0 0;
+  }
 }
