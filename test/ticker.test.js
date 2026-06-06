@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 
-import { createWatsonController, privateTestExports } from '../server/watson.js';
+import { createAppController, privateTestExports } from '../server/controllers.js';
 import { invokeController } from './helpers.js';
 
 describe('ticker quote controller', () => {
@@ -55,7 +55,7 @@ describe('ticker quote controller', () => {
   });
 
   it('responds to a valid ticker with a stock quote shape', async () => {
-    const controller = createWatsonController({
+    const controller = createAppController({
       fetchTicker: async ticker => ({
         t: ticker,
         l: '307.34',
@@ -84,7 +84,7 @@ describe('ticker quote controller', () => {
   });
 
   it('falls back without breaking the ticker UI contract when providers fail', async () => {
-    const controller = createWatsonController({
+    const controller = createAppController({
       fetchTicker: async () => {
         throw new Error('provider unavailable');
       },
@@ -100,7 +100,7 @@ describe('ticker quote controller', () => {
   });
 
   it('rejects a missing ticker', async () => {
-    const controller = createWatsonController();
+    const controller = createAppController();
 
     const { body, status } = await invokeController(controller.getTicker, {});
 

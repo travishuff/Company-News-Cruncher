@@ -252,7 +252,7 @@ async function fetchTicker(ticker) {
   }
 }
 
-export function createWatsonController(options = {}) {
+export function createAppController(options = {}) {
   const fetchNewsImpl = options.fetchNews || fetchNews;
   const fetchTickerImpl = options.fetchTicker || fetchTicker;
 
@@ -296,8 +296,8 @@ export function createWatsonController(options = {}) {
   };
 }
 
-const watsonController = createWatsonController();
-const { getNews, getTicker } = watsonController;
+const appController = createAppController();
+const { getNews, getTicker } = appController;
 
 export { getNews, getTicker };
 
@@ -307,4 +307,4 @@ export const privateTestExports = {
   parseTwelveDataQuote,
 };
 
-export default watsonController;
+export default appController;

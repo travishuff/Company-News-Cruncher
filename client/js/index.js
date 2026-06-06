@@ -1,23 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const newsForm = document.querySelector('#news-form');
   const companyInput = document.querySelector('#company');
-  const newsButton = document.querySelector('#message-button');
   const newsRoot = document.querySelector('.root');
+  const tickerForm = document.querySelector('#ticker-form');
   const tickerInput = document.querySelector('#ticker');
-  const tickerButton = document.querySelector('#ticker-button');
   const tickerRoot = document.querySelector('.root2');
   const dateRoot = document.querySelector('#date');
 
   dateRoot.append(Date());
 
-  newsButton.addEventListener('click', getNewsAnalysis);
-  companyInput.addEventListener('keydown', event => {
-    if (event.key === 'Enter') getNewsAnalysis();
-  });
+  newsForm.addEventListener('submit', getNewsAnalysis);
+  tickerForm.addEventListener('submit', getTickerQuote);
+  submitOnEnter(companyInput, newsForm);
+  submitOnEnter(tickerInput, tickerForm);
 
-  tickerButton.addEventListener('click', getTickerQuote);
-  tickerInput.addEventListener('keydown', event => {
-    if (event.key === 'Enter') getTickerQuote();
-  });
+  function preventSubmit(event) {
+    event.preventDefault();
+  }
+
+  function submitOnEnter(input, form) {
+    input.addEventListener('keydown', event => {
+      if (event.key !== 'Enter') return;
+
+      event.preventDefault();
+      form.requestSubmit();
+    });
+  }
 
   async function postForm(url, data) {
     const response = await fetch(url, {
@@ -63,8 +71,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return error && error.error ? error.error : fallback;
   }
 
-  async function getNewsAnalysis() {
-    const company = companyInput.value;
+  async function getNewsAnalysis(event) {
+    preventSubmit(event);
+
+    const company = companyInput.value.trim();
+    if (!company) {
+      replaceChildren(newsRoot, [paragraph('Company is required.')]);
+      return;
+    }
+
     companyInput.value = '';
     replaceChildren(newsRoot, [paragraph('Loading news analysis...')]);
 
@@ -87,8 +102,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  async function getTickerQuote() {
-    const ticker = tickerInput.value;
+  async function getTickerQuote(event) {
+    preventSubmit(event);
+
+    const ticker = tickerInput.value.trim();
+    if (!ticker) {
+      replaceChildren(tickerRoot, [paragraph('Ticker is required.')]);
+      return;
+    }
+
     tickerInput.value = '';
     replaceChildren(tickerRoot, [paragraph('Loading quote...')]);
 

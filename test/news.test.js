@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'bun:test';
 
-import { createWatsonController } from '../server/watson.js';
+import { createAppController } from '../server/controllers.js';
 import { invokeController } from './helpers.js';
 
 describe('news analysis controller', () => {
   it('returns the UI response shape for a company search', async () => {
-    const controller = createWatsonController({
+    const controller = createAppController({
       fetchNews: async () => ({
         title: 'Apple shares rise after product launch',
         url: 'https://example.com/apple-news',
@@ -31,7 +31,7 @@ describe('news analysis controller', () => {
   });
 
   it('rejects a missing company', async () => {
-    const controller = createWatsonController();
+    const controller = createAppController();
 
     const { body, status } = await invokeController(controller.getNews, {});
 

@@ -16,7 +16,6 @@ No API keys, database, build step, or front-end framework are required.
 - Runtime and package manager: Bun
 - Module syntax: native ES modules
 - HTTP server: Express 5
-- Response caching: apicache
 - Browser UI: static HTML, CSS, and modern vanilla JavaScript
 - Tests: Bun's built-in `bun:test`
 
@@ -31,12 +30,13 @@ No API keys, database, build step, or front-end framework are required.
 |   `-- js/
 |       `-- index.js
 |-- server/
-|   |-- server.js
-|   `-- watson.js
+|   |-- controllers.js
+|   `-- server.js
 |-- test/
 |   |-- client.test.js
 |   |-- helpers.js
 |   |-- news.test.js
+|   |-- server.test.js
 |   `-- ticker.test.js
 |-- bun.lock
 |-- package.json
@@ -241,13 +241,13 @@ Validation error:
 
 ## How It Works
 
-`server/server.js` builds the Express app, serves `client/`, parses JSON and URL-encoded bodies, and wires the two POST endpoints through a short apicache window.
+`server/server.js` builds the Express app, serves `client/`, parses JSON and URL-encoded bodies, and wires the two POST endpoints directly to the app controllers so each submitted form value is handled independently.
 
-`server/watson.js` contains the app logic. The filename is historical; the current implementation no longer uses IBM Watson or Alchemy:
+`server/controllers.js` contains the app logic:
 
 - `getNews` searches Google News RSS, parses the first item, scores headline sentiment with local keyword lists, and extracts simple concepts from the query and headline.
 - `getTicker` normalizes the ticker, queries Nasdaq first, falls back to Twelve Data demo data, and returns a local fallback object if both providers fail.
-- `createWatsonController` allows tests to inject deterministic provider functions without live network calls.
+- `createAppController` allows tests to inject deterministic provider functions without live network calls.
 
 ## Limitations
 

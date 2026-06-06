@@ -1,12 +1,10 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import apicache from 'apicache';
 import express from 'express';
 
-import { getNews, getTicker } from './watson.js';
+import { getNews, getTicker } from './controllers.js';
 
 const app = express();
-const cache = apicache.middleware;
 const clientDir = fileURLToPath(new URL('../client/', import.meta.url));
 const indexPath = path.join(clientDir, 'index.html');
 
@@ -25,9 +23,9 @@ app.get('/', (req, res) => {
   res.sendFile(indexPath);
 });
 
-app.post('/getNews', cache('2 minutes'), getNews);
+app.post('/getNews', getNews);
 
-app.post('/getTicker', cache('1 minutes'), getTicker);
+app.post('/getTicker', getTicker);
 
 if (import.meta.main) {
   const port = process.env.PORT || 3000;

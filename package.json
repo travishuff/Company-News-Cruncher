@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/travishuff/company-news-cruncher#readme",
   "dependencies": {
-    "apicache": "^1.6.3",
     "express": "^5.2.1"
   },
   "devDependencies": {

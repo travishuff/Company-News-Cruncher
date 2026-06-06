@@ -6,10 +6,26 @@ describe('client UI contract', () => {
     const html = readFileSync(new URL('../client/index.html', import.meta.url), 'utf8');
 
     expect(html).toContain('Company News Cruncher');
+    expect(html).toContain('<form class="subtitle" id="news-form">');
     expect(html).toContain('id="company"');
     expect(html).toContain('id="message-button"');
+    expect(html).toContain('<form class="subtitle" id="ticker-form">');
     expect(html).toContain('id="ticker"');
     expect(html).toContain('id="ticker-button"');
+  });
+
+  it('wires searches through submit handlers with an Enter-key fallback', () => {
+    const script = readFileSync(new URL('../client/js/index.js', import.meta.url), 'utf8');
+
+    expect(script).toContain("document.querySelector('#news-form')");
+    expect(script).toContain("document.querySelector('#ticker-form')");
+    expect(script).toContain("newsForm.addEventListener('submit', getNewsAnalysis)");
+    expect(script).toContain("tickerForm.addEventListener('submit', getTickerQuote)");
+    expect(script).toContain('submitOnEnter(companyInput, newsForm)');
+    expect(script).toContain('submitOnEnter(tickerInput, tickerForm)');
+    expect(script).toContain('form.requestSubmit()');
+    expect(script).toContain("postForm('/getNews', { company })");
+    expect(script).toContain("postForm('/getTicker', { ticker })");
   });
 
   it('references existing stylesheet and script assets', () => {
