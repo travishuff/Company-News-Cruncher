@@ -1,10 +1,14 @@
-const express = require('express');
-const app = express();
-const path = require('path');
-const bodyParser = require('body-parser');
-const cache = require('apicache').middleware;
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import apicache from 'apicache';
+import express from 'express';
 
-const { getData, getNews, getTicker } = require('./watson');
+import { getNews, getTicker } from './watson.js';
+
+const app = express();
+const cache = apicache.middleware;
+const clientDir = fileURLToPath(new URL('../client/', import.meta.url));
+const indexPath = path.join(clientDir, 'index.html');
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -12,18 +16,29 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(path.join(__dirname, '../client/' )));
+app.use(express.static(clientDir));
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, './../client/index.html'))
+  res.sendFile(indexPath);
 });
 
-app.post('/getNews', cache('2 minutes'), getNews, getData);
+app.post('/getNews', cache('2 minutes'), getNews);
 
 app.post('/getTicker', cache('1 minutes'), getTicker);
 
-app.listen(3000);
+if (import.meta.main) {
+  const port = process.env.PORT || 3000;
+  const keepAlive = typeof Bun !== 'undefined' ? setInterval(() => {}, 2147483647) : null;
+  const server = app.listen(port, () => {
+    console.log(`Company News Cruncher running at http://localhost:${port}`);
+  });
 
-module.exports = app;
+  server.on('close', () => {
+    if (keepAlive) clearInterval(keepAlive);
+  });
+}
+
+export default app;
