@@ -177,7 +177,7 @@ function parseJson(text) {
   try {
     return JSON.parse(text);
   } catch (error) {
-    throw new Error('Quote response was not valid JSON');
+    throw new Error('Quote response was not valid JSON', { cause: error });
   }
 }
 
@@ -241,7 +241,7 @@ async function fetchTicker(ticker) {
       },
     });
     return parseNasdaqQuote(ticker, nasdaqText);
-  } catch (error) {
+  } catch {
     const twelveDataUrl = `https://api.twelvedata.com/quote?symbol=${encodeURIComponent(ticker)}&apikey=demo`;
     const twelveDataText = await requestText(twelveDataUrl, {
       headers: {
@@ -267,7 +267,7 @@ export function createWatsonController(options = {}) {
       let article;
       try {
         article = await fetchNewsImpl(company);
-      } catch (error) {
+      } catch {
         article = fallbackNews(company);
       }
 
@@ -289,7 +289,7 @@ export function createWatsonController(options = {}) {
 
       try {
         res.json(await fetchTickerImpl(ticker));
-      } catch (error) {
+      } catch {
         res.json(fallbackTicker(ticker));
       }
     },

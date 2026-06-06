@@ -97,6 +97,18 @@ Current coverage focuses on fast, deterministic checks:
 - Valid ticker lookup returns a normalized stock quote object.
 - Provider failures return a stable fallback quote object instead of breaking the UI.
 
+## Lint
+
+```bash
+bun run lint
+```
+
+To apply safe automatic fixes:
+
+```bash
+bun run lint:fix
+```
+
 ## Browser Usage
 
 Start the server, then open:
@@ -251,6 +263,7 @@ Validation error:
 ```bash
 bun install
 bun start
+bun run lint
 bun test
 ```
 
