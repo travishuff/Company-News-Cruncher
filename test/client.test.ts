@@ -15,35 +15,42 @@ describe('client UI contract', () => {
   });
 
   it('wires searches through submit handlers with an Enter-key fallback', () => {
-    const script = readFileSync(new URL('../client/js/index.js', import.meta.url), 'utf8');
+    const script = readFileSync(new URL('../client/js/index.ts', import.meta.url), 'utf8');
 
-    expect(script).toContain("document.querySelector('#news-form')");
-    expect(script).toContain("document.querySelector('#ticker-form')");
+    expect(script).toContain("queryElement<HTMLFormElement>('#news-form')");
+    expect(script).toContain("queryElement<HTMLFormElement>('#ticker-form')");
     expect(script).toContain("newsForm.addEventListener('submit', getNewsAnalysis)");
     expect(script).toContain("tickerForm.addEventListener('submit', getTickerQuote)");
     expect(script).toContain('submitOnEnter(companyInput, newsForm)');
     expect(script).toContain('submitOnEnter(tickerInput, tickerForm)');
     expect(script).toContain('form.requestSubmit()');
-    expect(script).toContain("postForm('/getNews', { company })");
-    expect(script).toContain("postForm('/getTicker', { ticker })");
+    expect(script).toContain("postForm<NewsResponse>('/getNews', { company })");
+    expect(script).toContain("postForm<TickerResponse>('/getTicker', { ticker })");
   });
 
   it('references existing stylesheet and script assets', () => {
     const html = readFileSync(new URL('../client/index.html', import.meta.url), 'utf8');
     const stylesheetMatch = html.match(/href="([^"]+\.css)"/);
     const scriptMatch = html.match(/src="([^"]+\.js)"/);
+    const stylesheetPath = stylesheetMatch?.[1];
+    const scriptPath = scriptMatch?.[1];
 
-    expect(stylesheetMatch?.[1]).toBe('css/statuspage.css');
-    expect(scriptMatch?.[1]).toBe('js/index.js');
-    expect(existsSync(new URL(`../client/${stylesheetMatch[1]}`, import.meta.url))).toBe(true);
-    expect(existsSync(new URL(`../client/${scriptMatch[1]}`, import.meta.url))).toBe(true);
+    expect(stylesheetPath).toBe('css/statuspage.css');
+    expect(scriptPath).toBe('js/index.js');
+    if (!stylesheetPath || !scriptPath) throw new Error('Expected stylesheet and script references');
+
+    expect(existsSync(new URL(`../client/${stylesheetPath}`, import.meta.url))).toBe(true);
+    expect(existsSync(new URL(`../client/${scriptPath}`, import.meta.url))).toBe(true);
   });
 
   it('shows an existing screenshot in the README', () => {
     const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8');
     const screenshotMatch = readme.match(/!\[[^\]]+\]\((client\/img\/CNC-screen\.png)\)/);
+    const screenshotPath = screenshotMatch?.[1];
 
-    expect(screenshotMatch?.[1]).toBe('client/img/CNC-screen.png');
-    expect(existsSync(new URL(`../${screenshotMatch[1]}`, import.meta.url))).toBe(true);
+    expect(screenshotPath).toBe('client/img/CNC-screen.png');
+    if (!screenshotPath) throw new Error('Expected README screenshot reference');
+
+    expect(existsSync(new URL(`../${screenshotPath}`, import.meta.url))).toBe(true);
   });
 });

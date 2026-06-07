@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'bun:test';
 
-import { createAppController, privateTestExports } from '../server/controllers.js';
-import { invokeController } from './helpers.js';
+import { createAppController, privateTestExports } from '../server/controllers.ts';
+import type { TickerQuote } from '../server/controllers.ts';
+import { invokeController } from './helpers.ts';
 
 describe('ticker quote controller', () => {
   it('parses Nasdaq quote responses into the UI quote shape', () => {
@@ -68,7 +69,7 @@ describe('ticker quote controller', () => {
       }),
     });
 
-    const { body, status } = await invokeController(controller.getTicker, { ticker: 'aapl' });
+    const { body, status } = await invokeController<TickerQuote>(controller.getTicker, { ticker: 'aapl' });
 
     expect(status).toBe(200);
     expect(body).toEqual({
@@ -90,7 +91,7 @@ describe('ticker quote controller', () => {
       },
     });
 
-    const { body, status } = await invokeController(controller.getTicker, { ticker: 'msft' });
+    const { body, status } = await invokeController<TickerQuote>(controller.getTicker, { ticker: 'msft' });
 
     expect(status).toBe(200);
     expect(body.t).toBe('MSFT');
@@ -102,7 +103,7 @@ describe('ticker quote controller', () => {
   it('rejects a missing ticker', async () => {
     const controller = createAppController();
 
-    const { body, status } = await invokeController(controller.getTicker, {});
+    const { body, status } = await invokeController<{ error: string }>(controller.getTicker, {});
 
     expect(status).toBe(400);
     expect(body).toEqual({

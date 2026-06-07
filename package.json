@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "description": "An intelligent news analysis tool for any company's newsflow.",
   "type": "module",
-  "main": "server/server.js",
+  "main": "server/server.ts",
   "packageManager": "bun@1.3.14",
   "scripts": {
+    "build": "bun run typecheck && bun run build:client",
+    "build:client": "bun build client/js/index.ts --outfile client/js/index.js --target browser",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "start": "bun server/server.js",
-    "test": "bun test"
+    "start": "bun run build:client && bun server/server.ts",
+    "test": "bun run build:client && bun test",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -26,7 +29,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/bun": "^1.3.14",
+    "@types/express": "^5.0.6",
     "eslint": "^10.4.1",
-    "globals": "^17.6.0"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.60.1"
   }
 }

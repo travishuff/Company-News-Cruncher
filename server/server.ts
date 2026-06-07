@@ -2,7 +2,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
 
-import { getNews, getTicker } from './controllers.js';
+import { getNews, getTicker } from './controllers.ts';
 
 const app = express();
 const clientDir = fileURLToPath(new URL('../client/', import.meta.url));
@@ -29,7 +29,7 @@ app.post('/getTicker', getTicker);
 
 if (import.meta.main) {
   const port = process.env.PORT || 3000;
-  const keepAlive = typeof Bun !== 'undefined' ? setInterval(() => {}, 2147483647) : null;
+  const keepAlive = setInterval(() => {}, 2147483647);
   const server = app.listen(port, () => {
     console.log(`Company News Cruncher running at http://localhost:${port}`);
   });
