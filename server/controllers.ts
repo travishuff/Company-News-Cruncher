@@ -1,3 +1,65 @@
+import type { RequestHandler } from 'express';
+
+type SentimentType = 'positive' | 'negative' | 'neutral';
+
+interface Sentiment {
+  type: SentimentType;
+  score: string;
+}
+
+interface Concept {
+  text: string;
+  relevance: string;
+}
+
+interface NewsArticle {
+  title: string;
+  url: string;
+  publishedAt: string;
+}
+
+export interface NewsResponse {
+  title: string;
+  docSentiment: Sentiment;
+  concepts: Concept[];
+  sourceUrl: string;
+  publishedAt: string;
+}
+
+export interface TickerQuote {
+  t: string;
+  l: string;
+  lt: string;
+  source: string;
+  name?: string;
+  change?: string;
+  percentChange?: string;
+  marketStatus?: string;
+}
+
+interface ControllerOptions {
+  fetchNews?: (company: string) => Promise<NewsArticle>;
+  fetchTicker?: (ticker: string) => Promise<TickerQuote>;
+}
+
+interface AppController {
+  getNews: RequestHandler;
+  getTicker: RequestHandler;
+}
+
+interface RequestTextOptions {
+  headers?: HeadersInit;
+  timeoutMs?: number;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value && typeof value === 'object' && !Array.isArray(value));
+}
+
+function stringValue(value: unknown): string {
+  return typeof value === 'string' ? value : '';
+}
+
 const POSITIVE_WORDS = new Set([
   'beat',
   'beats',
@@ -57,15 +119,16 @@ const STOP_WORDS = new Set([
   'with',
 ]);
 
-function getBodyValue(body) {
+function getBodyValue(body: unknown): string {
   if (!body || typeof body !== 'object') return '';
+  if (!isRecord(body)) return '';
   if (typeof body.company === 'string') return body.company;
   if (typeof body.ticker === 'string') return body.ticker;
   const firstKey = Object.keys(body)[0];
   return firstKey || '';
 }
 
-async function requestText(url, options = {}) {
+async function requestText(url: string, options: RequestTextOptions = {}): Promise<string> {
   const controller = new AbortController();
   const timeout = setTimeout(() => {
     controller.abort();
@@ -87,7 +150,7 @@ async function requestText(url, options = {}) {
   }
 }
 
-function decodeHtml(value) {
+function decodeHtml(value: string): string {
   return String(value || '')
     .replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1')
     .replace(/&amp;/g, '&')
@@ -97,12 +160,13 @@ function decodeHtml(value) {
     .replace(/&gt;/g, '>');
 }
 
-function readXmlTag(xml, tagName) {
+function readXmlTag(xml: string, tagName: string): string {
   const match = xml.match(new RegExp(`<${tagName}[^>]*>([\\s\\S]*?)<\\/${tagName}>`, 'i'));
-  return match ? decodeHtml(match[1]).trim() : '';
+  const value = match?.[1];
+  return value ? decodeHtml(value).trim() : '';
 }
 
-function parseFirstNewsItem(rss) {
+function parseFirstNewsItem(rss: string): NewsArticle | null {
   const itemMatch = rss.match(/<item\b[\s\S]*?<\/item>/i);
   if (!itemMatch) return null;
 
@@ -113,14 +177,14 @@ function parseFirstNewsItem(rss) {
   };
 }
 
-function normalizeTicker(rawTicker) {
+function normalizeTicker(rawTicker: string): string {
   return String(rawTicker || '')
     .trim()
     .replace(/[^a-z0-9.-]/gi, '')
     .toUpperCase();
 }
 
-function sentimentFor(text) {
+function sentimentFor(text: string): Sentiment {
   const words = String(text || '').toLowerCase().match(/[a-z]+/g) || [];
   const score = words.reduce((total, word) => {
     if (POSITIVE_WORDS.has(word)) return total + 1;
@@ -134,13 +198,13 @@ function sentimentFor(text) {
   return { type: 'neutral', score: '0.00' };
 }
 
-function conceptsFor(company, title) {
+function conceptsFor(company: string, title: string): Concept[] {
   const candidates = `${company} ${title}`
     .split(/[^a-z0-9.-]+/i)
     .map(word => word.trim())
     .filter(word => word.length > 2 && !STOP_WORDS.has(word.toLowerCase()));
 
-  const unique = [];
+  const unique: string[] = [];
   candidates.forEach(word => {
     if (!unique.some(item => item.toLowerCase() === word.toLowerCase())) unique.push(word);
   });
@@ -151,7 +215,7 @@ function conceptsFor(company, title) {
   }));
 }
 
-function fallbackNews(company) {
+function fallbackNews(company: string): NewsArticle {
   return {
     title: `Latest coverage for ${company}`,
     url: '',
@@ -159,7 +223,7 @@ function fallbackNews(company) {
   };
 }
 
-function fallbackTicker(ticker) {
+function fallbackTicker(ticker: string): TickerQuote {
   return {
     t: ticker,
     l: 'Unavailable',
@@ -168,12 +232,12 @@ function fallbackTicker(ticker) {
   };
 }
 
-function cleanQuoteValue(value) {
+function cleanQuoteValue(value: unknown): string {
   const cleaned = String(value || '').replace(/[^0-9.-]/g, '');
   return cleaned || '';
 }
 
-function parseJson(text) {
+function parseJson(text: string): unknown {
   try {
     return JSON.parse(text);
   } catch (error) {
@@ -181,10 +245,14 @@ function parseJson(text) {
   }
 }
 
-export function parseNasdaqQuote(ticker, text) {
+export function parseNasdaqQuote(ticker: string, text: string): TickerQuote {
   const payload = parseJson(text);
-  const data = payload.data || {};
-  const primaryData = data.primaryData || {};
+  if (!isRecord(payload)) {
+    throw new Error('Nasdaq quote response was not an object');
+  }
+
+  const data = isRecord(payload.data) ? payload.data : {};
+  const primaryData = isRecord(data.primaryData) ? data.primaryData : {};
   const price = cleanQuoteValue(primaryData.lastSalePrice);
 
   if (!price) {
@@ -192,29 +260,32 @@ export function parseNasdaqQuote(ticker, text) {
   }
 
   return {
-    t: String(data.symbol || ticker).toUpperCase(),
+    t: String(stringValue(data.symbol) || ticker).toUpperCase(),
     l: price,
-    lt: primaryData.lastTradeTimestamp || new Date().toISOString(),
-    name: data.companyName || '',
+    lt: stringValue(primaryData.lastTradeTimestamp) || new Date().toISOString(),
+    name: stringValue(data.companyName),
     change: cleanQuoteValue(primaryData.netChange),
     percentChange: String(primaryData.percentageChange || '').replace('%', ''),
-    marketStatus: data.marketStatus || '',
+    marketStatus: stringValue(data.marketStatus),
     source: 'Nasdaq',
   };
 }
 
-export function parseTwelveDataQuote(ticker, text) {
+export function parseTwelveDataQuote(ticker: string, text: string): TickerQuote {
   const payload = parseJson(text);
+  if (!isRecord(payload)) {
+    throw new Error('Twelve Data quote response was not an object');
+  }
 
   if (payload.status === 'error' || !payload.close) {
-    throw new Error(payload.message || 'Twelve Data quote response did not include a price');
+    throw new Error(stringValue(payload.message) || 'Twelve Data quote response did not include a price');
   }
 
   return {
-    t: String(payload.symbol || ticker).toUpperCase(),
+    t: String(stringValue(payload.symbol) || ticker).toUpperCase(),
     l: cleanQuoteValue(payload.close),
-    lt: payload.datetime || new Date().toISOString(),
-    name: payload.name || '',
+    lt: stringValue(payload.datetime) || new Date().toISOString(),
+    name: stringValue(payload.name),
     change: cleanQuoteValue(payload.change),
     percentChange: cleanQuoteValue(payload.percent_change),
     marketStatus: payload.is_market_open ? 'Open' : 'Closed',
@@ -222,14 +293,14 @@ export function parseTwelveDataQuote(ticker, text) {
   };
 }
 
-async function fetchNews(company) {
+async function fetchNews(company: string): Promise<NewsArticle> {
   const query = encodeURIComponent(`${company} company`);
   const url = `https://news.google.com/rss/search?q=${query}&hl=en-US&gl=US&ceid=US:en`;
   const rss = await requestText(url);
   return parseFirstNewsItem(rss) || fallbackNews(company);
 }
 
-async function fetchTicker(ticker) {
+async function fetchTicker(ticker: string): Promise<TickerQuote> {
   const nasdaqUrl = `https://api.nasdaq.com/api/quote/${encodeURIComponent(ticker)}/info?assetclass=stocks`;
 
   try {
@@ -252,7 +323,7 @@ async function fetchTicker(ticker) {
   }
 }
 
-export function createAppController(options = {}) {
+export function createAppController(options: ControllerOptions = {}): AppController {
   const fetchNewsImpl = options.fetchNews || fetchNews;
   const fetchTickerImpl = options.fetchTicker || fetchTicker;
 
@@ -264,20 +335,22 @@ export function createAppController(options = {}) {
         return;
       }
 
-      let article;
+      let article: NewsArticle;
       try {
         article = await fetchNewsImpl(company);
       } catch {
         article = fallbackNews(company);
       }
 
-      res.json({
+      const response: NewsResponse = {
         title: article.title,
         docSentiment: sentimentFor(article.title),
         concepts: conceptsFor(company, article.title),
         sourceUrl: article.url,
         publishedAt: article.publishedAt,
-      });
+      };
+
+      res.json(response);
     },
 
     getTicker: async (req, res) => {

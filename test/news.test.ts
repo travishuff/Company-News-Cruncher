@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'bun:test';
 
-import { createAppController } from '../server/controllers.js';
-import { invokeController } from './helpers.js';
+import { createAppController } from '../server/controllers.ts';
+import type { NewsResponse } from '../server/controllers.ts';
+import { invokeController } from './helpers.ts';
 
 describe('news analysis controller', () => {
   it('returns the UI response shape for a company search', async () => {
@@ -13,7 +14,7 @@ describe('news analysis controller', () => {
       }),
     });
 
-    const { body, status } = await invokeController(controller.getNews, { company: 'Apple' });
+    const { body, status } = await invokeController<NewsResponse>(controller.getNews, { company: 'Apple' });
 
     expect(status).toBe(200);
     expect(body).toMatchObject({
@@ -33,7 +34,7 @@ describe('news analysis controller', () => {
   it('rejects a missing company', async () => {
     const controller = createAppController();
 
-    const { body, status } = await invokeController(controller.getNews, {});
+    const { body, status } = await invokeController<{ error: string }>(controller.getNews, {});
 
     expect(status).toBe(400);
     expect(body).toEqual({

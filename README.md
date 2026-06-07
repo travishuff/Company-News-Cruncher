@@ -1,6 +1,6 @@
 # Company News Cruncher
 
-Company News Cruncher is a Bun-powered Express app with a small vanilla JavaScript front end for checking recent company news and stock quotes.
+Company News Cruncher is a Bun-powered TypeScript and Express app with a small vanilla TypeScript front end for checking recent company news and stock quotes.
 
 ![Company News Cruncher screenshot](client/img/CNC-screen.png)
 
@@ -9,14 +9,15 @@ The app has two workflows:
 - Search a company name or ticker and render a recent news headline with lightweight sentiment and concept extraction.
 - Enter a stock ticker and render quote data from Nasdaq's public quote JSON endpoint, with a Twelve Data demo fallback and a graceful local fallback if providers are unavailable.
 
-No API keys, database, build step, or front-end framework are required.
+No API keys, database, or front-end framework are required.
 
 ## Stack
 
 - Runtime and package manager: Bun
+- Language: TypeScript
 - Module syntax: native ES modules
 - HTTP server: Express 5
-- Browser UI: static HTML, CSS, and modern vanilla JavaScript
+- Browser UI: static HTML, CSS, and modern vanilla TypeScript compiled to browser JavaScript
 - Tests: Bun's built-in `bun:test`
 
 ## Repository Layout
@@ -28,18 +29,19 @@ No API keys, database, build step, or front-end framework are required.
 |   |-- img/CNC-screen.png
 |   |-- index.html
 |   `-- js/
-|       `-- index.js
+|       `-- index.ts
 |-- server/
-|   |-- controllers.js
-|   `-- server.js
+|   |-- controllers.ts
+|   `-- server.ts
 |-- test/
-|   |-- client.test.js
-|   |-- helpers.js
-|   |-- news.test.js
-|   |-- server.test.js
-|   `-- ticker.test.js
+|   |-- client.test.ts
+|   |-- helpers.ts
+|   |-- news.test.ts
+|   |-- server.test.ts
+|   `-- ticker.test.ts
 |-- bun.lock
 |-- package.json
+|-- tsconfig.json
 `-- README.md
 ```
 
@@ -61,6 +63,8 @@ bun install
 bun start
 ```
 
+`bun start` compiles `client/js/index.ts` to the ignored browser asset at `client/js/index.js`, then starts the TypeScript server.
+
 The app listens on port `3000` by default:
 
 ```text
@@ -76,16 +80,10 @@ PORT=4000 bun start
 ## Test
 
 ```bash
-bun test
-```
-
-or:
-
-```bash
 bun run test
 ```
 
-The suite uses Bun's native test discovery and runs the `*.test.js` files under `test/`.
+The suite builds the browser entry first, then uses Bun's native test discovery to run the `*.test.ts` files under `test/`.
 
 Current coverage focuses on fast, deterministic checks:
 
@@ -108,6 +106,15 @@ To apply safe automatic fixes:
 ```bash
 bun run lint:fix
 ```
+
+## Typecheck and Build
+
+```bash
+bun run typecheck
+bun run build
+```
+
+`bun run build` runs the TypeScript checker and emits the static browser JavaScript bundle used by `client/index.html`.
 
 ## Browser Usage
 
@@ -241,9 +248,9 @@ Validation error:
 
 ## How It Works
 
-`server/server.js` builds the Express app, serves `client/`, parses JSON and URL-encoded bodies, and wires the two POST endpoints directly to the app controllers so each submitted form value is handled independently.
+`server/server.ts` builds the Express app, serves `client/`, parses JSON and URL-encoded bodies, and wires the two POST endpoints directly to the app controllers so each submitted form value is handled independently.
 
-`server/controllers.js` contains the app logic:
+`server/controllers.ts` contains the app logic:
 
 - `getNews` searches Google News RSS, parses the first item, scores headline sentiment with local keyword lists, and extracts simple concepts from the query and headline.
 - `getTicker` normalizes the ticker, queries Nasdaq first, falls back to Twelve Data demo data, and returns a local fallback object if both providers fail.
@@ -255,7 +262,7 @@ Validation error:
 - Concept extraction is intentionally simple.
 - News lookup depends on Google News RSS availability.
 - Quote lookup depends on public provider endpoints that can change or rate-limit.
-- The UI is intentionally minimal and has no build pipeline.
+- The UI is intentionally minimal and uses a small Bun build step for browser TypeScript.
 - There is no authentication, persistence, monitoring, deployment config, or CI yet.
 
 ## Useful Commands
